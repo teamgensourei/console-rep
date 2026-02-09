@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Console - Complicate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="console.css">
+</head>
+
+<body>
+
+<div id="boot-screen">
+  <div class="logo"><img src="team (1).svg" alt="Team GenSouRei"></div>
+</div>
+
+<button id="logout-btn" onclick="logout()">LOGOUT</button>
+
+<div id="top-credit">© Team:還遭霊 / Team:GenSouRei</div>
+<div id="measure-top" class="measure-line"></div>
+<div id="measure-bottom" class="measure-line"></div>
+<div id="barcode-left" class="fake-barcode"></div>
+<div id="barcode-right" class="fake-barcode"></div>
+<div id="center-fragments"></div>
+
+<div id="info-block">
+  <div class="ib-title">T:G3L</div>
+  <div>PHASE : <span id="phase">0</span></div>
+  <div>STATUS : OBSERVING</div>
+  <div>NODE : ACTIVE</div>
+  <div>USER : <span id="username">LOADING...</span></div>
+</div>
+
+<div id="side-mark">
+  <span>T</span>
+  <span>G</span>
+  <span>3</span>
+  <span>L</span>
+</div>
+
+<div id="frame">
+  <div id="console">
+    <div id="log">INPUT COMMAND.</div>
+    <input id="input" autocomplete="off" aria-label="Command input">
+
+    <div class="addon-monument">
+      <div class="addon-lines">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="addon-lines dense">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+
+      <div class="addon-barcode">
+        <i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="addon-barcode thin">
+        <i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i>
+      </div>
+
+      <div class="addon-label">
+        MONUMENT NODE : B-04<br>
+        SIGNAL STATUS : OBSERVING<br>
+        DIMENSION LINK : ACTIVE
+      </div>
+    </div>
+
+    <a id="post-x" target="_blank" rel="noopener noreferrer">POST RESULT TO X</a>
+  </div>
+
+  <div id="right-text">
+    <p>This is a space named only as the boundary that lies between reality and fiction.</p>
+    <p>All beings, perceptions, and concepts that exist in this world converge here.</p>
+    <p>Dimensions extend like branching paths.</p>
+    <p>Dimensions ultimately arrive at this boundary.</p>
+    <p>Dimensions unfold as four-dimensional space, the three-dimensional plane in which we reside,<br>
+       the two-dimensional plane that exists upon a surface,<br>
+       and the one-dimensional line defined only by length.</p>
+    <p>What we are primarily able to observe and create are these three alone.</p>
+    <p>However, beyond them exist numerous dimensions that we are unable to perceive.</p>
+    <p>The place where all of those dimensions gather is here.</p>
+    <p>Countless stories exist, branching endlessly like limbs of a tree.</p>
+    <p>We call this phenomenon "<span class="keyword">Gensourei</span>".</p>
+  </div>
+</div>
+
+<div id="confirmed-panel"></div>
+
+<script src="config.js"></script>
+<script>
+// 認証チェック
+function checkAuth() {
+  const token = localStorage.getItem('boundary_token');
+  if (!token) {
+    window.location.href = 'index.html';
+    return;
+  }
+  
+  const userData = localStorage.getItem('boundary_user');
+  if (userData) {
+    try {
+      const user = JSON.parse(userData);
+      document.getElementById('username').textContent = user.scratchUsername || 'UNKNOWN';
+    } catch (e) {
+      console.error('User data parse error:', e);
+      document.getElementById('username').textContent = 'ERROR';
+    }
+  }
+}
+
+function logout() {
+  if (confirm('ログアウトしますか？')) {
+    localStorage.removeItem('boundary_token');
+    localStorage.removeItem('boundary_user');
+    window.location.href = 'index.html';
+  }
+}
+
+// Initialize
+checkAuth();
+
+// Remove boot screen after animation
+setTimeout(() => {
+  const bootScreen = document.getElementById("boot-screen");
+  if (bootScreen) bootScreen.remove();
+}, 8000);
+
+// Console logic
+const input = document.getElementById("input");
+const log = document.getElementById("log");
+const phaseEl = document.getElementById("phase");
+const confirmedPanel = document.getElementById("confirmed-panel");
+const postX = document.getElementById("post-x");
+
+const answers = ["MISSION_I_COMPLETE"];
+const confirmed = new Set();
+
+input.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  
+  const cmd = input.value.trim();
+  input.value = "";
+
+  if (answers.includes(cmd) && !confirmed.has(cmd)) {
+    confirmed.add(cmd);
+    const p = confirmed.size;
+
+    log.textContent = "VERIFYING INPUT...";
+    log.className = "glitch";
+
+    setTimeout(() => {
+      log.className = "";
+      log.textContent = "ANSWER CONFIRMED.";
+      log.classList.add("fade-in");
+
+      phaseEl.textContent = p;
+      confirmedPanel.textContent = `CONFIRMED NODE ${p}`;
+      confirmedPanel.classList.add("fade-in");
+      confirmedPanel.style.opacity = 1;
+
+      const d = new Date();
+      const today = 
+        d.getFullYear() + "/" +
+        String(d.getMonth() + 1).padStart(2, "0") + "/" +
+        String(d.getDate()).padStart(2, "0");
+
+      const postText = 
+`◤◢◤調査完了◢◤◢
+
+あなたはログデータ「mission I」の問題を解決し、
+虚構の存在、"葎"を元ある場所へ返す一つの過程を完了しました。
+
+また、「▓▓▓▓▓▓」データ解明の手掛かりを一部を完了させました。
+
+虚構から現実への戻化の記録：${today}
+
+#バベ尖 #バベルの尖塔 #ARG #リアルタイム`;
+
+      postX.href = "https://x.com/intent/post?text=" + encodeURIComponent(postText);
+      postX.style.display = "inline-block";
+      postX.classList.add("fade-in");
+      
+      saveProgress('MISSION_I', 'COMPLETE', { completedAt: today });
+    }, 1200);
+  } else {
+    log.textContent = "NO RESPONSE.";
+  }
+});
+
+// Save progress to server
+async function saveProgress(challenge, status, data) {
+  const token = localStorage.getItem('boundary_token');
+  if (!token) return;
+  
+  try {
+    await fetch(`${API_CONFIG.BASE_URL}/api/progress`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ challenge, status, data })
+    });
+  } catch (error) {
+    console.error('Progress save error:', error);
+  }
+}
+</script>
+
+</body>
+</html>
